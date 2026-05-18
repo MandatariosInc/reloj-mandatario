@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MarianoOS - Cerebro Operativo</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Manrope:wght@400;500;700&display=swap');
+
+    :root {
+      --bg-dark: #0B0B0B;
+      --bg-panel: #111111;
+      --gold: #C6A56B;
+      --gold-dim: #5a4a2a;
+      --text-main: #F5F1E8;
+      --text-muted: #888888;
+      --border: #2a2a2a;
+      --red-alert: #C0392B;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Manrope', sans-serif;
+      margin: 0;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .dashboard {
+      width: 100%;
+      max-width: 1000px;
+      background: var(--bg-panel);
+      border: 0.5px solid var(--border);
+      border-radius: 16px;
+      padding: 30px;
+    }
+
+    .header {
+      border-bottom: 0.5px solid var(--border);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 14px;
+      color: var(--gold);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      margin: 5px 0 0 0;
+    }
+
+    .section-title {
+      font-size: 14px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 15px;
+      border-bottom: 1px dashed var(--border);
+      padding-bottom: 5px;
+    }
+
+    /* --- GOALS SECTION --- */
+    .goals-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 12px;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .input-group textarea, .input-group input {
+      width: 100%;
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      border-radius: 8px;
+      padding: 12px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px;
+      resize: vertical;
+      transition: 0.3s;
+    }
+
+    .input-group textarea:focus, .input-group input:focus {
+      border-color: var(--gold);
+      outline: none;
+    }
+
+    /* --- ADD ACTIVITY SECTION --- */
+    .add-activity-bar {
+      display: flex;
+      gap: 10px;
+      background: var(--bg-dark);
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      margin-bottom: 30px;
+      align-items: flex-end;
+    }
+
+    .add-activity-bar select, .add-activity-bar input {
+      background: #1a1a1a;
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 10px;
+      border-radius: 4px;
+      font-family: 'Manrope', sans-serif;
+    }
+
+    .btn-gold {
+      background: var(--gold);
+      color: var(--bg-dark);
+      border: none;
+      padding: 11px 20px;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .btn-gold:hover { background: #d4b47a; }
+
+    /* --- MAIN GRID --- */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
+
+    /* --- ACCORDIONS --- */
+    .accordion {
+      background: var(--bg-dark);
+      border: 0.5px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .accordion-header {
+      padding: 15px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+    .accordion-header:hover { background: #1a1a1a; }
+
+    .accordion-content {
+      padding: 0 15px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out, padding 0.3s ease;
+      background: #0f0f0f;
+    }
+    .accordion.active .accordion-content {
+      padding: 15px;
+      max-height: 200px;
+    }
+
+    .tracker-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+    }
+
+    .tracker-controls button {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--gold);
+      border-radius: 4px;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .tracker-controls button:hover {
+      border-color: var(--gold);
+      background: var(--gold-dim);
+    }
+    .tracker-count {
+      display: inline-block;
+      width: 40px;
+      text-align: center;
+      font-weight: bold;
+      color: var(--text-main);
+    }
+    .remaining {
+      font-size: 12px;
+      color: var(--red-alert);
+    }
+
+    /* --- AGENDA BLOCKS --- */
+    .agenda-block {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      background: var(--bg-dark);
+      border-left: 3px solid var(--border);
+      margin-bottom: 10px;
+      border-radius: 4px;
+    }
+    .agenda-block.fixed { border-left-color: var(--red-alert); }
+    .agenda-block.flexible { border-left-color: var(--gold); }
+    .time {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      color: var(--gold);
+      min-width: 80px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dashboard">
+    <div class="header">
+      <div>
+        <div class="logo-text">Mandatarios Inc · Cerebro Operativo</div>
+        <h1 class="title">MarianoOS</h1>
+      </div>
+      <div style="text-align: right;">
+        <button class="btn-gold" onclick="limpiarDatos()" style="font-size: 11px; padding: 6px 12px; background: transparent; border: 1px solid var(--border); color: var(--text-muted);">Reset Semanal</button>
+      </div>
+    </div>
+
+    <div class="section-title">Dirección Estratégica</div>
+    <div class="goals-grid">
+      <div class="input-group">
+        <label>Meta Principal del Mes</label>
+        <textarea id="meta-mes" rows="2" placeholder="Ej: Leer 10 libros y facturar $5k..." onchange="guardarDatos()"></textarea>
+      </div>
+      <div class="input-group">
+        <label>Metas de la Semana</label>
+        <textarea id="meta-semana" rows="2" placeholder="Tus 3 enfoques clave (Regla 80/20)..." onchange="guardarDatos()"></textarea>
+      </div>
+    </div>
+
+    <div class="section-title">Crear Nuevo Bloque de Acción</div>
+    <div class="add-activity-bar">
+      <div class="input-group" style="flex: 1;">
+        <label>Categoría</label>
+        <select id="new-cat">
+          <option value="Contenido">Contenido (Redes)</option>
+          <option value="Agencia">Mandatarios Inc (B2B)</option>
+          <option value="Crecimiento">Crecimiento (Idiomas/Estudio)</option>
+        </select>
+      </div>
+      <div class="input-group" style="flex: 2;">
+        <label>Nombre (Ej: YouTube - Mariano Ureña)</label>
+        <input type="text" id="new-name" placeholder="Escribe el nombre...">
+      </div>
+      <div class="input-group" style="flex: 1;">
+        <label>Meta Semanal (Num)</label>
+        <input type="number" id="new-goal" placeholder="Ej: 20">
+      </div>
+      <button class="btn-gold" onclick="agregarActividad()">Agregar al Sistema</button>
+    </div>
+
+    <div class="main-grid">
+      <div>
+        <div class="section-title">Panel de Ejecución</div>
+        <div id="dynamic-activities">
+          </div>
+      </div>
+
+      <div>
+        <div class="section-title">Matriz de Agenda Diaria</div>
+        <div class="agenda-block fixed">
+          <div class="time">8:00 AM</div>
+          <div>
+            <div style="font-weight: 600;">Café con mi esposa</div>
+            <div style="font-size: 12px; color: var(--text-muted);">Bloque Fijo — Inviolable</div>
+          </div>
+        </div>
+        <div class="agenda-block fixed">
+          <div class="time">9:00 AM</div>
+          <div>
+            <div style="font-weight: 600;">Estudio NT & Oración</div>
+            <div style="font-size: 12px; color: var(--text-muted);">Bloque Fijo — Tutor Espiritual</div>
+          </div>
+        </div>
+        <div class="agenda-block flexible">
+          <div class="time">10:00 AM</div>
+          <div>
+            <div style="font-weight: 600;">Bloque Estudio (IA / Francés)</div>
+            <div style="font-size: 12px; color: var(--text-muted);">Bloque Flexible — Deep Work</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-gold" style="width: 100%; margin-top: 30px; padding: 15px; font-size: 16px; text-transform: uppercase;" onclick="generarAuditoria()">
+      ✦ Generar Reporte para I.A. (Copiar Contexto) ✦
+    </button>
+  </div>
+
+  <script>
+    // Base de datos local
+    let actividades = JSON.parse(localStorage.getItem('marianoActividades')) || {};
+
+    // Cargar datos al iniciar
+    window.onload = function() {
+      document.getElementById('meta-mes').value = localStorage.getItem('marianoMetaMes') || '';
+      document.getElementById('meta-semana').value = localStorage.getItem('marianoMetaSemana') || '';
+      renderizarActividades();
+    };
+
+    function guardarDatos() {
+      localStorage.setItem('marianoMetaMes', document.getElementById('meta-mes').value);
+      localStorage.setItem('marianoMetaSemana', document.getElementById('meta-semana').value);
+      localStorage.setItem('marianoActividades', JSON.stringify(actividades));
+    }
+
+    function limpiarDatos() {
+      if(confirm("¿Seguro que quieres resetear los contadores para la nueva semana?")) {
+        for (let key in actividades) { actividades[key].current = 0; }
+        guardarDatos();
+        renderizarActividades();
+      }
+    }
+
+    function toggleAccordion(el) {
+      el.parentElement.classList.toggle('active');
+    }
+
+    function agregarActividad() {
+      const cat = document.getElementById('new-cat').value;
+      const name = document.getElementById('new-name').value.trim();
+      const goal = parseInt(document.getElementById('new-goal').value);
+
+      if(!name || isNaN(goal) || goal <= 0) {
+        alert("Llena el nombre y pon una meta mayor a 0.");
+        return;
+      }
+
+      const id = 'act_' + Date.now();
+      actividades[id] = { cat: cat, name: name, goal: goal, current: 0 };
+      
+      document.getElementById('new-name').value = '';
+      document.getElementById('new-goal').value = '';
+      
+      guardarDatos();
+      renderizarActividades();
+    }
+
+    function updateCount(id, change) {
+      const act = actividades[id];
+      const newVal = act.current + change;
+      if (newVal >= 0 && newVal <= act.goal) {
+        act.current = newVal;
+        guardarDatos();
+        renderizarActividades();
+      }
+    }
+
+    function renderizarActividades() {
+      const container = document.getElementById('dynamic-activities');
+      container.innerHTML = '';
+
+      for (let id in actividades) {
+        const act = actividades[id];
+        const faltan = act.goal - act.current;
+        const statusText = faltan > 0 ? `Faltan: ${faltan}` : '¡Completado! ✓';
+        const statusColor = faltan > 0 ? 'var(--red-alert)' : 'var(--gold)';
+
+        const html = `
+          <div class="accordion">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <span>[${act.cat}] ${act.name}</span>
+              <span class="remaining" style="color: ${statusColor}">${statusText}</span>
+            </div>
+            <div class="accordion-content">
+              <div class="tracker-item">
+                <span>Progreso (Meta: ${act.goal})</span>
+                <div class="tracker-controls">
+                  <button onclick="updateCount('${id}', -1)">−</button>
+                  <span class="tracker-count">${act.current}</span>
+                  <button onclick="updateCount('${id}', 1)">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        container.innerHTML += html;
+      }
+    }
+
+    function generarAuditoria() {
+      const mes = document.getElementById('meta-mes').value;
+      const semana = document.getElementById('meta-semana').value;
+      
+      let reporte = `**CONTEXTO MARIANO UREÑA - REPORTE SEMANAL**\n\n`;
+      reporte += `**METAS:**\n- Mes: ${mes || 'No definida'}\n- Semana: ${semana || 'No definida'}\n\n`;
+      reporte += `**PROGRESO DE ACTIVIDADES:**\n`;
+
+      for (let id in actividades) {
+        const act = actividades[id];
+        reporte += `- [${act.cat}] ${act.name}: Logrado ${act.current} de ${act.goal}\n`;
+      }
+
+      reporte += `\nActúa como mi Junta Directiva (Estratega, Tutor de Idiomas, Tutor Espiritual, Tutor Psicológico). En base a estos números reales, dame un triaje duro y directo sobre qué debo ajustar esta semana para no sabotearme y cumplir mi regla de YO → SISTEMA → RESULTADO.`;
+
+      navigator.clipboard.writeText(reporte).then(() => {
+        alert("¡Reporte copiado! Pégalo en Claude o ChatGPT para recibir tu coaching personalizado.");
+      });
+    }
+  </script>
+</body>
+</html>
